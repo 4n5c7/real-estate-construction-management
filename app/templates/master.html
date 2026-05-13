@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}{{ label }}{% endblock %}
+{% block content %}
+<h1>{{ label }}</h1>
+
+<div class="card">
+  <h2>新規追加 / 編集</h2>
+  <form method="post">
+    <input type="hidden" name="action" value="save">
+    <div class="form-grid">
+      {% for col in cols %}
+        {% if col != cols[0] %}
+          <div class="field">
+            <label>{{ col }}</label>
+            <input type="text" name="{{ col }}">
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    <div class="toolbar" style="margin-top:12px;">
+      <button class="btn btn-success" type="submit">追加</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <h2>登録済み一覧 ({{ rows|length }} 件)</h2>
+  <div style="overflow:auto;">
+  <table class="data">
+    <thead>
+      <tr>
+        {% for col in cols %}<th>{{ col }}</th>{% endfor %}
+        <th>状態</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+        <tr>
+          <form method="post">
+            <input type="hidden" name="action" value="save">
+            {% for col in cols %}
+              <td>
+                {% if loop.first %}
+                  <input type="hidden" name="{{ col }}" value="{{ row[col] }}">
+                  {{ row[col] }}
+                {% else %}
+                  <input type="text" name="{{ col }}" value="{{ row[col] or '' }}">
+                {% endif %}
+              </td>
+            {% endfor %}
+            <td class="center">
+              {% if row.is_active %}
+                <span class="badge ok">有効</span>
+              {% else %}
+                <span class="badge cancelled">無効</span>
+              {% endif %}
+            </td>
+            <td class="nowrap">
+              <button class="btn btn-sm" type="submit">保存</button>
+          </form>
+          {% if row.is_active %}
+              <form method="post" data-confirm="このマスタを無効化しますか?" style="display:inline;">
+                <input type="hidden" name="action" value="delete">
+                <input type="hidden" name="record_id" value="{{ row[cols[0]] }}">
+                <button class="btn btn-sm btn-danger" type="submit">無効化</button>
+              </form>
+          {% endif %}
+            </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="{{ cols|length + 2 }}" class="center muted">未登録</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="toolbar">
+  <a class="btn btn-secondary" href="{{ url_for('main.master_index') }}">マスタ一覧へ</a>
+</div>
+{% endblock %}

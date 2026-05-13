@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}バックアップ / 復元{% endblock %}
+{% block content %}
+<h1>バックアップ / 復元</h1>
+
+<div class="card">
+  <h2>バックアップ操作</h2>
+  <p class="muted">
+    バックアップは <code>data/backups/</code> フォルダに ZIP として保存されます。<br>
+    DB ファイル・添付ファイル・設定ファイルがすべて含まれます。
+  </p>
+  <form method="post" style="display:inline;">
+    <input type="hidden" name="action" value="create">
+    <button class="btn btn-success" type="submit">今すぐバックアップ作成</button>
+  </form>
+  <form method="post" style="display:inline;">
+    <input type="hidden" name="action" value="check">
+    <button class="btn btn-secondary" type="submit">整合性チェック実行</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>バックアップ一覧 ({{ backups|length }} 件)</h2>
+  {% if backups %}
+    <table class="data">
+      <thead>
+        <tr><th>ファイル名</th><th>サイズ</th><th>作成日時</th><th>操作</th></tr>
+      </thead>
+      <tbody>
+        {% for b in backups %}
+          <tr>
+            <td>{{ b.name }}</td>
+            <td class="num">{{ b.size_kb }} KB</td>
+            <td class="nowrap">{{ b.modified }}</td>
+            <td class="nowrap">
+              <a class="btn btn-sm btn-secondary"
+                 href="{{ url_for('main.backup_download', name=b.name) }}">ダウンロード</a>
+              <form method="post" style="display:inline;"
+                    data-confirm="このバックアップから復元します。現状データは退避されますが、元に戻りますか?">
+                <input type="hidden" name="action" value="restore">
+                <input type="hidden" name="name" value="{{ b.name }}">
+                <button class="btn btn-sm btn-danger" type="submit">復元</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="muted">バックアップはまだありません。</p>
+  {% endif %}
+</div>
+{% endblock %}

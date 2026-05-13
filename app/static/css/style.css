@@ -1,0 +1,269 @@
+/* 不動産工事管理アプリ スタイル */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  color: #222;
+  background: #f5f7fa;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+a { color: #1f4e78; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---------- ヘッダー ---------- */
+.topbar {
+  background: #1f4e78;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  height: 56px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.topbar .brand a {
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 24px;
+}
+.mainnav { display: flex; gap: 4px; flex-wrap: wrap; }
+.mainnav a {
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+.mainnav a:hover { background: rgba(255,255,255,0.15); text-decoration: none; }
+
+/* ---------- 共通レイアウト ---------- */
+.container {
+  max-width: 1280px;
+  margin: 20px auto;
+  padding: 0 16px 80px;
+}
+h1, h2, h3 { color: #1f4e78; }
+h1 { font-size: 22px; margin: 0 0 16px; }
+h2 { font-size: 18px; margin: 24px 0 12px; border-left: 4px solid #1f4e78; padding-left: 10px; }
+h3 { font-size: 16px; margin: 16px 0 8px; }
+
+/* ---------- カード ---------- */
+.card {
+  background: #fff;
+  border: 1px solid #dde2ea;
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+
+/* ---------- KPI ---------- */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.kpi {
+  background: #fff;
+  border-left: 4px solid #1f4e78;
+  border-radius: 4px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+.kpi .label { font-size: 12px; color: #666; }
+.kpi .value { font-size: 26px; font-weight: bold; margin-top: 4px; color: #1f4e78; }
+.kpi.alert { border-left-color: #c0392b; }
+.kpi.alert .value { color: #c0392b; }
+.kpi.warn { border-left-color: #e67e22; }
+.kpi.warn .value { color: #e67e22; }
+.kpi.ok { border-left-color: #27ae60; }
+.kpi.ok .value { color: #27ae60; }
+
+/* ---------- テーブル ---------- */
+table.data {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  font-size: 13px;
+}
+table.data th, table.data td {
+  border: 1px solid #dde2ea;
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+table.data th {
+  background: #1f4e78;
+  color: #fff;
+  position: sticky;
+  top: 0;
+  white-space: nowrap;
+}
+table.data tbody tr:nth-child(even) { background: #f7f9fc; }
+table.data tbody tr:hover { background: #e8f0fa; }
+table.data td.num { text-align: right; font-variant-numeric: tabular-nums; }
+table.data td.center { text-align: center; }
+
+/* ---------- フォーム ---------- */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px 16px;
+}
+.field { display: flex; flex-direction: column; }
+.field label {
+  font-size: 12px;
+  color: #555;
+  margin-bottom: 3px;
+  font-weight: bold;
+}
+input[type=text], input[type=date], input[type=number], input[type=email],
+input[type=password], select, textarea {
+  border: 1px solid #c5cbd5;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #fff;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #1f4e78;
+  box-shadow: 0 0 0 2px rgba(31,78,120,0.15);
+}
+textarea { resize: vertical; min-height: 60px; }
+.required::after { content: " *"; color: #c0392b; }
+
+/* ---------- ボタン ---------- */
+.btn {
+  display: inline-block;
+  background: #1f4e78;
+  color: #fff;
+  border: 0;
+  border-radius: 4px;
+  padding: 7px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: inherit;
+}
+.btn:hover { background: #163a5c; text-decoration: none; }
+.btn-sm { padding: 4px 8px; font-size: 12px; }
+.btn-secondary { background: #607080; }
+.btn-secondary:hover { background: #485866; }
+.btn-danger { background: #c0392b; }
+.btn-danger:hover { background: #962d22; }
+.btn-success { background: #27ae60; }
+.btn-success:hover { background: #1e8449; }
+
+/* ---------- バッジ ---------- */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  background: #dde2ea;
+  color: #333;
+  white-space: nowrap;
+}
+.badge.received          { background: #d6eaf8; color: #1f618d; }
+.badge.quoting           { background: #d4e6f1; color: #21618c; }
+.badge.quoted            { background: #d1f2eb; color: #117a65; }
+.badge.pending_approval  { background: #fdebd0; color: #b9770e; }
+.badge.ordered           { background: #e8daef; color: #6c3483; }
+.badge.in_progress       { background: #fcf3cf; color: #9a7d0a; }
+.badge.completed         { background: #d4efdf; color: #1e8449; }
+.badge.invoiced          { background: #abebc6; color: #145a32; }
+.badge.on_hold           { background: #f2d7d5; color: #922b21; }
+.badge.cancelled         { background: #d5d8dc; color: #424949; }
+
+.badge.priority-1 { background: #ecf0f1; color: #555; }
+.badge.priority-2 { background: #fdebd0; color: #b9770e; }
+.badge.priority-3 { background: #f5b7b1; color: #922b21; font-weight: bold; }
+
+/* ---------- フラッシュメッセージ ---------- */
+.flashes { margin-bottom: 12px; }
+.flash {
+  padding: 8px 14px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+.flash-success { background: #d4efdf; color: #1e8449; border-left: 4px solid #27ae60; }
+.flash-error   { background: #f5b7b1; color: #922b21; border-left: 4px solid #c0392b; }
+.flash-info    { background: #d6eaf8; color: #21618c; border-left: 4px solid #1f4e78; }
+
+/* ---------- タブ ---------- */
+.tabs {
+  display: flex;
+  border-bottom: 2px solid #1f4e78;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.tab-btn {
+  background: transparent;
+  border: 0;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #555;
+  font-family: inherit;
+}
+.tab-btn.active {
+  background: #1f4e78;
+  color: #fff;
+  border-radius: 4px 4px 0 0;
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ---------- フィルタ ---------- */
+.filter-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px 12px;
+  margin-bottom: 12px;
+}
+.filter-bar .actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 8px;
+}
+
+/* ---------- フッター ---------- */
+.footer {
+  text-align: center;
+  padding: 12px;
+  color: #888;
+  border-top: 1px solid #dde2ea;
+  background: #fff;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.toolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.muted { color: #888; font-size: 12px; }
+.text-right { text-align: right; }
+.nowrap { white-space: nowrap; }
+
+/* リスト操作履歴 */
+.recent-list { list-style: none; padding: 0; margin: 0; }
+.recent-list li {
+  padding: 6px 0;
+  border-bottom: 1px dashed #dde2ea;
+  font-size: 13px;
+}
+.recent-list li:last-child { border-bottom: 0; }
