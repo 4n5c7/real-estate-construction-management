@@ -1,0 +1,22 @@
+# データ (利用者ごとのデータは Git 管理外)
+data/database/*.sqlite
+data/database/*.sqlite-journal
+data/attachments/
+data/exports/
+data/backups/
+data/logs/
+data/config/settings.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}ダッシュボード{% endblock %}
+{% block content %}
+<h1>ダッシュボード</h1>
+
+<div class="kpi-grid">
+  <div class="kpi">
+    <div class="label">進行中の工事</div>
+    <div class="value">{{ kpi.in_progress }}</div>
+  </div>
+  <div class="kpi ok">
+    <div class="label">完了済み</div>
+    <div class="value">{{ kpi.completed }}</div>
+  </div>
+  <div class="kpi warn">
+    <div class="label">保留</div>
+    <div class="value">{{ kpi.on_hold }}</div>
+  </div>
+  <div class="kpi alert">
+    <div class="label">緊急工事</div>
+    <div class="value">{{ kpi.urgent }}</div>
+  </div>
+  <div class="kpi alert">
+    <div class="label">期限超過</div>
+    <div class="value">{{ kpi.overdue }}</div>
+  </div>
+  <div class="kpi">
+    <div class="label">見積合計</div>
+    <div class="value">¥{{ kpi.estimate_sum|yen }}</div>
+  </div>
+  <div class="kpi">
+    <div class="label">請求合計</div>
+    <div class="value">¥{{ kpi.invoice_sum|yen }}</div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>状態別件数</h2>
+  <table class="data">
+    <thead>
+      <tr>
+        {% for code, label in STATUS_CODES %}
+          <th>{{ label }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        {% for code, label in STATUS_CODES %}
+          <td class="center">
+            <a href="{{ url_for('main.construction_list', status=code) }}">
+              {{ kpi.by_status.get(code, 0) }}
+            </a>
+          </td>
+        {% endfor %}
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h2>直近の操作履歴</h2>
+  {% if kpi.recent_ops %}
+    <ul class="recent-list">
+      {% for op in kpi.recent_ops %}
+        <li>
+          <span class="muted">{{ op.occurred_at }}</span>
+          [{{ op.screen }}] {{ op.operation }}
+          {% if op.target_id %} - {{ op.target_id }}{% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="muted">操作履歴はまだありません。</p>
+  {% endif %}
+</div>
+
+<div class="toolbar">
+  <a class="btn" href="{{ url_for('main.construction_new') }}">＋ 新規工事登録</a>
+  <a class="btn btn-secondary" href="{{ url_for('main.construction_list') }}">工事一覧へ</a>
+  <a class="btn btn-secondary" href="{{ url_for('main.export_view') }}">Excel 出力</a>
+</div>
+{% endblock %}
