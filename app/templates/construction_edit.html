@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+{% block title %}{% if record %}工事編集{% else %}工事新規登録{% endif %}{% endblock %}
+{% block content %}
+<h1>
+  {% if record %}
+    工事編集 <span class="muted">{{ record.construction_id }}</span>
+  {% else %}
+    工事新規登録
+  {% endif %}
+</h1>
+
+<form method="post" action="{% if record %}{{ url_for('main.construction_edit', construction_id=record.construction_id) }}{% else %}{{ url_for('main.construction_new') }}{% endif %}">
+
+<div class="tabs">
+  <button type="button" class="tab-btn active" data-tab="tab-basic">基本情報</button>
+  <button type="button" class="tab-btn" data-tab="tab-schedule">スケジュール</button>
+  <button type="button" class="tab-btn" data-tab="tab-estimate">見積</button>
+  <button type="button" class="tab-btn" data-tab="tab-invoice">請求</button>
+  {% if record %}
+    <button type="button" class="tab-btn" data-tab="tab-attachment">添付</button>
+    <button type="button" class="tab-btn" data-tab="tab-history">履歴</button>
+  {% endif %}
+  <button type="button" class="tab-btn" data-tab="tab-note">備考</button>
+</div>
+
+<div id="tab-basic" class="tab-content active card">
+  <div class="form-grid">
+    <div class="field">
+      <label class="required">物件</label>
+      <select name="property_id" required>
+        <option value="">--選択--</option>
+        {% for p in properties %}
+          <option value="{{ p.property_id }}" {% if record and record.property_id==p.property_id %}selected{% endif %}>{{ p.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label>部屋番号 / 区画</label>
+      <input type="text" name="room_no" value="{{ record.room_no if record else '' }}">
+    </div>
+    <div class="field">
+      <label class="required">工事区分</label>
+      <select name="category_id">
+        <option value="">--選択--</option>
+        {% for c in categories %}
+          <option value="{{ c.category_id }}" {% if record and record.category_id==c.category_id %}selected{% endif %}>{{ c.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label class="required">優先度</label>
+      <select name="priority">
+        {% for code, label in PRIORITY_LABELS.items() %}
+          <option value="{{ code }}" {% if record and record.priority==code %}selected{% elif not record and code==1 %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label class="required">状態</label>
+      <select name="status">
+        {% for code, label in STATUS_CODES %}
+          <option value="{{ code }}" {% if record and record.status==code %}selected{% elif not record and code=='received' %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label>担当者</label>
+      <select name="staff_id">
+        <option value="">--選択--</option>
+        {% for s in staffs %}
+          <option value="{{ s.staff_id }}" {% if record and record.staff_id==s.staff_id %}selected{% endif %}>{{ s.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label>業者</label>
+      <select name="vendor_id">
+        <option value="">--選択--</option>
+        {% for v in vendors %}
+          <option value="{{ v.vendor_id }}" {% if record and record.vendor_id==v.vendor_id %}selected{% endif %}>{{ v.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+  <div class="field" style="margin-top:12px;">
+    <label>工事内容</label>
+    <textarea name="description" rows="3">{{ record.description if record else '' }}</textarea>
+  </div>
+</div>
+
+<div id="tab-schedule" class="tab-content card">
+  <div class="form-grid">
+    <div class="field">
+      <label class="required">受付日</label>
+      <input type="date" name="received_at" value="{{ record.received_at if record else '' }}" required>
+    </div>
+    <div class="field">
+      <label>着工予定日</label>
+      <input type="date" name="scheduled_start_at" value="{{ record.scheduled_start_at if record else '' }}">
+    </div>
+    <div class="field">
+      <label>完了予定日</label>
+      <input type="date" name="scheduled_end_at" value="{{ record.scheduled_end_at if record else '' }}">
+    </div>
+    <div class="field">
+      <label>完了日</label>
+      <input type="date" name="completed_at" value="{{ record.completed_at if record else '' }}">
+    </div>
+  </div>
+</div>
+
+<div id="tab-estimate" class="tab-content card">
+  <div class="form-grid">
+    <div class="field">
+      <label>見積金額 (税込・円)</label>
+      <input type="text" name="estimate_amount" value="{{ record.estimate_amount if record else '' }}" placeholder="例: 150000">
+    </div>
+    <div class="field">
+      <label>見積取得日</label>
+      <input type="date" name="estimate_received_at" value="{{ record.estimate_received_at if record else '' }}">
+    </div>
+    <div class="field">
+      <label>見積有効期限</label>
+      <input type="date" name="estimate_valid_until" value="{{ record.estimate_valid_until if record else '' }}">
+    </div>
+  </div>
+</div>
+
+<div id="tab-invoice" class="tab-content card">
+  <div class="form-grid">
+    <div class="field">
+      <label>請求金額 (税込・円)</label>
+      <input type="text" name="invoice_amount" value="{{ record.invoice_amount if record else '' }}" placeholder="例: 150000">
+    </div>
+    <div class="field">
+      <label>請求書受領日</label>
+      <input type="date" name="invoice_received_at" value="{{ record.invoice_received_at if record else '' }}">
+    </div>
+    <div class="field">
+      <label>支払予定日</label>
+      <input type="date" name="payment_due_at" value="{{ record.payment_due_at if record else '' }}">
+    </div>
+    <div class="field">
+      <label>支払済</label>
+      <label style="font-weight:normal;margin-top:6px;">
+        <input type="checkbox" name="paid" value="1" {% if record and record.paid %}checked{% endif %}> 支払済み
+      </label>
+    </div>
+  </div>
+</div>
+
+{% if record %}
+<div id="tab-attachment" class="tab-content card">
+  <h3>添付ファイル</h3>
+  <form method="post" enctype="multipart/form-data"
+        action="{{ url_for('main.attachment_upload', construction_id=record.construction_id) }}"
+        style="margin-bottom:12px;">
+    <div class="form-grid">
+      <div class="field">
+        <label>種別</label>
+        <select name="type">
+          {% for code, label in ATTACHMENT_TYPES.items() %}
+            <option value="{{ code }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label>ファイル (複数選択可)</label>
+        <input type="file" name="files" multiple>
+      </div>
+      <div class="field" style="justify-content:flex-end;">
+        <label>&nbsp;</label>
+        <button class="btn" type="submit">アップロード</button>
+      </div>
+    </div>
+  </form>
+  {% if attachments %}
+    <table class="data">
+      <thead>
+        <tr><th>種別</th><th>ファイル名</th><th>サイズ</th><th>登録日時</th><th>操作</th></tr>
+      </thead>
+      <tbody>
+        {% for a in attachments %}
+          <tr>
+            <td>{{ ATTACHMENT_TYPES.get(a.type, a.type) }}</td>
+            <td><a href="{{ url_for('main.attachment_download', attachment_id=a.attachment_id) }}">{{ a.file_name }}</a></td>
+            <td class="num">{{ (a.file_size or 0) // 1024 }} KB</td>
+            <td class="nowrap">{{ a.uploaded_at }}</td>
+            <td>
+              <form method="post" data-confirm="削除しますか?"
+                    action="{{ url_for('main.attachment_delete', attachment_id=a.attachment_id) }}"
+                    style="display:inline;">
+                <button class="btn btn-sm btn-danger" type="submit">削除</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="muted">添付ファイルはまだありません。</p>
+  {% endif %}
+</div>
+
+<div id="tab-history" class="tab-content card">
+  <h3>状態変更履歴</h3>
+  {% if history %}
+    <table class="data">
+      <thead>
+        <tr><th>変更日時</th><th>変更前</th><th>変更後</th><th>変更者</th><th>コメント</th></tr>
+      </thead>
+      <tbody>
+        {% for h in history %}
+          <tr>
+            <td class="nowrap">{{ h.changed_at }}</td>
+            <td><span class="badge {{ h.old_status }}">{{ STATUS_LABELS.get(h.old_status, '-') }}</span></td>
+            <td><span class="badge {{ h.new_status }}">{{ STATUS_LABELS.get(h.new_status, h.new_status) }}</span></td>
+            <td>{{ h.changed_by_name or '' }}</td>
+            <td>{{ h.comment or '' }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="muted">履歴はありません。</p>
+  {% endif %}
+</div>
+{% endif %}
+
+<div id="tab-note" class="tab-content card">
+  <div class="field">
+    <label>備考</label>
+    <textarea name="note" rows="6">{{ record.note if record else '' }}</textarea>
+  </div>
+</div>
+
+<div class="toolbar">
+  <button class="btn btn-success" type="submit">{% if record %}更新{% else %}登録{% endif %}</button>
+  <a class="btn btn-secondary" href="{{ url_for('main.construction_list') }}">一覧へ戻る</a>
+</div>
+</form>
+
+{% if record %}
+<form method="post" data-confirm="この工事案件を削除しますか? (論理削除)"
+      action="{{ url_for('main.construction_delete', construction_id=record.construction_id) }}"
+      style="margin-top:12px;">
+  <button class="btn btn-danger" type="submit">この工事を削除</button>
+</form>
+{% endif %}
+{% endblock %}
